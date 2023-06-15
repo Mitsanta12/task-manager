@@ -1,22 +1,15 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-interface ServerTime {
-  toLocaleString: () => string;
-}
-
 /**
  * Calculates the time difference between the server time and client time.
  * @param {Date} serverTime - The server time.
  * @param {Date} clientTime - The client time.
  * @returns {string} The time difference in the format "{days} days, {hours} hours, {minutes} minutes, {seconds} seconds".
  */
-const calculateTimeDifference = (
-  serverTime: Date,
-  clientTime: Date
-) => {
+const calculateTimeDifference = (serverTime, clientTime) => {
   // Calculate the time difference
-  const timeDiff = Math.abs(serverTime.getTime() - clientTime.getTime());
+  const timeDiff = Math.abs(new Date(serverTime).getTime() - clientTime.getTime());
 
   // Calculate the number of seconds in the time difference
   const seconds = Math.floor(timeDiff / 1000) % 60;
@@ -33,11 +26,7 @@ const calculateTimeDifference = (
   return `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
 };
 
-interface HomeProps {
-  serverTime: ServerTime;
-}
-
-export default function Home({ serverTime }: HomeProps) {
+export default function Home({ serverTime }) {
   const router = useRouter();
   const clientTime = new Date();
 
@@ -59,8 +48,7 @@ export default function Home({ serverTime }: HomeProps) {
         <h1>The easiest exam you will ever find</h1>
         <div>
           <p>
-            Server time:{" "}
-            <span className="serverTime">{serverTime.toLocaleString()}</span>
+            Server time: <span className="serverTime">{serverTime}</span>
           </p>
           <p>
             Time diff: <span className="serverTime">{timeDifference}</span>
@@ -75,10 +63,10 @@ export default function Home({ serverTime }: HomeProps) {
 }
 
 export async function getServerSideProps() {
-  const serverTime = new Date();
+  const now = new Date();
   return {
     props: {
-      serverTime,
+      serverTime: now.toISOString(),
     },
   };
 }
