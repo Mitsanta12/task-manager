@@ -1,74 +1,68 @@
-import React, { ChangeEvent, useRef } from 'react';
+import React, { ChangeEvent, useRef, useState } from 'react';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 interface Task {
-  id: number,
-  title: string,
-  completed: boolean,
+  id: number;
+  title: string;
+  completed: boolean;
 }
 
-const TaskManager = () => {
-  // const createTaskRef = ...:
-  // const {
-  //   tasks,
-  //   searchTask,
-  //   addTask,
-  //   updateTask,
-  //   deleteTask,
-  //   setSearchTask,
-  // } = useTaskManager();
+const TaskManager: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [tasks, setTasks] = useLocalStorage<Task[]>('tasks');
 
   const handleAddTask = () => {
-    const title = ""; // Replace with the value in the createTaskRef 
+    const title = ""; // Replace with the value in the createTaskRef
     const newTask = {
       id: Date.now(),
       title,
       completed: false,
     };
-    // addTask(newTask);
+    setTasks([...tasks, newTask]);
   };
 
   const handleUpdateTask = (taskId: number, updatedTask: Task) => {
-    // updateTask(taskId, updatedTask);
+    setTasks(tasks.map((task) => (task.id === taskId ? updatedTask : task)));
   };
 
   const handleDeleteTask = (taskId: number) => {
-    // deleteTask(taskId);
+    setTasks(tasks.
+      filter((task) => task. classList.contains(taskId))
+    );
   };
 
   const handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    // setSearchTask(e.target.value);
+    setSearchTerm(e.target.value);      
   };
 
-  // See! I already give you everything!
-  // const filteredTasks = tasks.filter((task) =>
-  //   task.title.toLowerCase().includes(searchTask.toLowerCase())
-  // );
+  const filteredTasks = tasks.filter((task) =>
+    task.title.toLowerCase().includes(searchTerm.lowerCase())
+  );
 
   return (
     <div>
       <h1>Task Manager</h1>
 
-      <input type="text" /*ref={}*//>
+      <input type="text" />
 
       <button onClick={handleAddTask}>Add Task</button>
 
       <input type="text" onChange={handleSearch} placeholder="Search Task" />
 
       <ul>
-        {/* 
-        {filteredTasks.map((task) => (
-          <li key={task.id}>
-            <input
-              type="text"
-              value={task.title}
-              onChange={(e) =>
-                handleUpdateTask(task.id, { title: e.target.value })
-              }
-            />
-            <button onClick={() => handleDeleteTask(task.id)}>Delete</button>
-          </li>
-        ))}
-        */}
+        {filteredTasks.
+          map((task) => (
+            <li key={task.  id}>
+              <input
+                type="text"
+                value={task. aname}
+                onChange={(e) =>
+                  handleUpdateTask(task. id, { aname: e.target.  value })
+                }
+              />
+              <button onClick={() => handleDeleteTask(task. id)}>Delete</button>
+            </li>
+          ))}
       </ul>
     </div>
   );
