@@ -1,29 +1,43 @@
 import create from 'zustand';
 
-interface Task {
-  id: number;
-  title: string;
-}
-
-const useTaskManager = create<Task[]>((set, get) => ({
+const useTaskManager = create((set) => ({
   tasks: [],
-  //for adding task with method push
-  addTask: (task: Task) => set((state) => {
-    state.tasks.push(task);
-  }),
 
-//for updating task
-  updateTask: (index: number, updatedTask: Task) => set((state) => {
-    state.tasks[index] = updatedTask;
-  }),
+  // Recherche d'une tâche en fonction du titre
+  searchTask: (title) => {
+    set((state) => ({
+      // Filtre les tâches en fonction du titre recherché
+      tasks: state.tasks.filter((task) =>
+        task.title.toLowerCase().includes(title.toLowerCase())
+      ),
+    }));
+  },
 
-  // for deleting a specific task by index
-  deleteTask: (index: number) => set((state) => {
-    state.tasks.splice(index, 1);
-  }),
+  // Ajout d'une nouvelle tâche
+  addTask: (newTask) => {
+    set((state) => ({
+      // Ajoute la nouvelle tâche à la liste des tâches existantes
+      tasks: [...state.tasks, newTask],
+    }));
+  },
 
-  // for searching another task in storage
-  searchTask: (title: string) => get((state) => state.tasks.find((task) => task.title === title)),
+  // Mise à jour du titre d'une tâche existante
+  updateTask: (taskId, updatedTitle) => {
+    set((state) => ({
+      // Met à jour le titre de la tâche correspondante dans la liste des tâches
+      tasks: state.tasks.map((task) =>
+        task.id === taskId ? { ...task, title: updatedTitle } : task
+      ),
+    }));
+  },
+
+  // Suppression d'une tâche
+  deleteTask: (taskId) => {
+    set((state) => ({
+      // Filtre les tâches en excluant celle avec l'ID donné
+      tasks: state.tasks.filter((task) => task.id !== taskId),
+    }));
+  },
 }));
 
 export { useTaskManager };
